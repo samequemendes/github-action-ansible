@@ -1,0 +1,30 @@
+- name: "LAB GitHub Actions – Listar Buckets via Ansible"
+  hosts: localhost
+  gather_facts: false
+  vars:
+    github_repo: "SEU_USUARIO/SEU_REPOSITORIO"
+    workflow_file: "listar-buckets.yml"
+    github_branch: "main"
+    github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
+
+  tasks:
+
+    - name: "🚀 Método 1 – Acionar via API (módulo uri)"
+      uri:
+        url: "https://api.github.com/repos/{{ github_repo }}/actions/workflows/{{ workflow_file }}/dispatches"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ github_token }}"
+          Accept: "application/vnd.github+json"
+        body_format: json
+        body:
+          ref: "{{ github_branch }}"
+        status_code: 204
+
+    - name: "🚀 Método 2 – Acionar via Script Shell"
+      shell: |
+        curl -X POST \
+          -H "Authorization: Bearer {{ github_token }}" \
+          -H "Accept: application/vnd.github+json" \
+          https://api.github.com/repos/{{ github_repo }}/actions/workflows/{{ workflow_file }}/dispatches \
+          -d '{"ref":"{{ github_branch }}"}'

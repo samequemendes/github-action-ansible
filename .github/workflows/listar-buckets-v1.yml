@@ -1,0 +1,25 @@
+name: "Listar Buckets S3 via script.py"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  listar-buckets:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: "📥 Checkout do Repositório"
+      uses: actions/checkout@v4
+
+    - name: "🔐 Configurar Credenciais AWS"
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: "🐍 Instalar Dependências"
+      run: pip install boto3
+
+    - name: "🚀 Executar script.py"
+      run: python3 script.py
